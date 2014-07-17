@@ -16,30 +16,53 @@ module.exports = function(app, express) {
 
 
 	router.get('/place/:id', function(req, res) {
-		citygrid.getPlace(req.params.id, req.ip, req.headers['user-agent'], function(err, data) {
-			res.json(data);
-		});
+		citygrid.getPlace(
+			req.params.id,
+			req.ip,
+			req.headers['user-agent'],
+			returnJson.bind(null, req, res)
+		);
 	});
 
 	router.get('/places/:stateName/:cityName', function(req, res) {
-		citygrid.getPlaces(req.params.stateName, req.params.cityName, req.query, function(err, data) {
-			res.json(data);
-		});
+		citygrid.getPlaces(
+			req.params.stateName,
+			req.params.cityName,
+			req.query,
+			returnJson.bind(null, req, res)
+		);
 	});
 	router.get('/reviews/:stateName/:cityName', function(req, res) {
-		citygrid.getReviews(req.params.stateName, req.params.cityName, req.query, function(err, data) {
-			res.json(data);
-		});
+		citygrid.getReviews(
+			req.params.stateName,
+			req.params.cityName,
+			req.query,
+			returnJson.bind(null, req, res)
+		);
 	});
 	router.get('/offers/:stateName/:cityName', function(req, res) {
-		citygrid.getOffers(req.params.stateName, req.params.cityName, req.query, function(err, data) {
-			res.json(data);
-		});
+		citygrid.getOffers(
+			req.params.stateName,
+			req.params.cityName,
+			req.query,
+			returnJson.bind(null, req, res)
+		);
 	});
 
 
 	return router;
 };
+
+
+
+function returnJson(req, res, err, data) {
+	if (req.query.callback) {
+		res.jsonp(data);
+	}
+	else {
+		res.jsonp(data);
+	}
+}
 
 
 

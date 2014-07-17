@@ -116,7 +116,7 @@ function getWhere(endpoint, where, filters, fnCallback) {
 	const defaultFilters = {
 		page: 1,
 		rpp: 10,
-		sort: 'topmatches',
+		sort: 'topmatches', // dist, alpha, highestrated, mostreviewed, topmatches, offers
 	};
 
 	const params = {
