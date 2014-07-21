@@ -56,12 +56,14 @@ module.exports = function(app, express) {
 
 
 function returnJson(req, res, err, data) {
-	if (req.query.callback) {
-		res.jsonp(data);
-	}
-	else {
-		res.jsonp(data);
-	}
+	const cacheTime = 60 * 15; // 15 minutes
+	
+	res.writeHead(200, {
+		'Cache-Control': 'public, max-age=' + (cacheTime),
+		'Expires': new Date(Date.now() + (cacheTime * 1000)).toUTCString(),
+	});
+
+	res.jsonp(data);
 }
 
 
