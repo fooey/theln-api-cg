@@ -57,8 +57,8 @@ module.exports = function(app, express) {
 
 function returnJson(req, res, err, data) {
 	const cacheTime = 60 * 15; // 15 minutes
-	
-	res.writeHead(200, {
+
+	res.set({
 		'Cache-Control': 'public, max-age=' + (cacheTime),
 		'Expires': new Date(Date.now() + (cacheTime * 1000)).toUTCString(),
 	});
