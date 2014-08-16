@@ -34,7 +34,7 @@ function requestJson(requestUrl, fnCallback) {
 	requestCompressed(requestUrl, function(err, data) {
 		fnCallback(err, parseJson(data));
 	});
-};
+}
 
 
 
@@ -45,7 +45,7 @@ function requestCompressed(requestUrl, fnCallback) {
 	};
 
 	console.log('requestOptions', requestOptions);
-	
+
 	var req = request.get(requestOptions);
 
 	req.on('response', function(res) {

@@ -15,6 +15,10 @@ module.exports = function(app, express) {
 	var router = express.Router();
 
 
+	/*
+	*	Place
+	*/
+
 	router.get('/place/:id', function(req, res) {
 		citygrid.getPlace(
 			req.params.id,
@@ -24,6 +28,12 @@ module.exports = function(app, express) {
 		);
 	});
 
+
+
+	/*
+	*	Places
+	*/
+
 	router.get('/places/:stateName/:cityName', function(req, res) {
 		citygrid.getPlaces(
 			req.params.stateName,
@@ -32,6 +42,21 @@ module.exports = function(app, express) {
 			returnJson.bind(null, req, res)
 		);
 	});
+
+	router.get('/places/:coords([0-9.,;-]+)', function(req, res) {
+		citygrid.getPlacesLoc(
+			req.params.coords,
+			req.query,
+			returnJson.bind(null, req, res)
+		);
+	});
+
+
+
+	/*
+	*	Reviews
+	*/
+
 	router.get('/reviews/:stateName/:cityName', function(req, res) {
 		citygrid.getReviews(
 			req.params.stateName,
@@ -40,10 +65,33 @@ module.exports = function(app, express) {
 			returnJson.bind(null, req, res)
 		);
 	});
+
+	router.get('/reviews/:coords([0-9.,;-]+)', function(req, res) {
+		citygrid.getReviewsLoc(
+			req.params.coords,
+			req.query,
+			returnJson.bind(null, req, res)
+		);
+	});
+
+
+
+	/*
+	*	Offers
+	*/
+
 	router.get('/offers/:stateName/:cityName', function(req, res) {
 		citygrid.getOffers(
 			req.params.stateName,
 			req.params.cityName,
+			req.query,
+			returnJson.bind(null, req, res)
+		);
+	});
+
+	router.get('/offers/:coords([0-9.,;-]+)', function(req, res) {
+		citygrid.getOffersLoc(
+			req.params.coords,
 			req.query,
 			returnJson.bind(null, req, res)
 		);
