@@ -75,7 +75,7 @@ const endpoints = {
 function getPlace(id, ipAddress, userAgent, fnCallback) {
 	const params = {
 		id: id,
-		id_type: 'cs',
+		id_type: 'cg',
 		client_ip: ipAddress,
 		ua: userAgent,
 	};
