@@ -22,7 +22,7 @@ module.exports = function(app, express) {
 	router.get('/place/:id', function(req, res) {
 		citygrid.getPlace(
 			req.params.id,
-			req.ip,
+			req.headers['client_ip'] || req.ip,
 			req.headers['user-agent'],
 			returnJson.bind(null, req, res)
 		);

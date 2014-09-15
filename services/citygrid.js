@@ -80,6 +80,8 @@ function getPlace(id, ipAddress, userAgent, fnCallback) {
 		ua: userAgent,
 	};
 
+	console.log(params);
+
 	get('place', params, function(err, jsonData) {
 		fnCallback(err, jsonData);
 	});
