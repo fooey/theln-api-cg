@@ -78,9 +78,9 @@ function getPlace(id, ipAddress, userAgent, fnCallback) {
 		id_type: 'cg',
 		client_ip: ipAddress,
 		ua: userAgent,
+		review_count: 20,
+		offer_count: 10,
 	};
-
-	console.log(params);
 
 	get('place', params, function(err, jsonData) {
 		fnCallback(err, jsonData);
