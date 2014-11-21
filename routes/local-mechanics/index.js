@@ -18,10 +18,17 @@ module.exports = function(server, restify) {
 	*/
 
 	server.get('/lm/place/:id', function(req, res) {
+		var userAgent = req.header('user-agent');
+		var clientIp = (
+			req.header('client_ip')
+			|| req.headers['x-forwarded-for']
+			|| req.connection.remoteAddress
+		);
+
 		citygrid.getPlace(
 			req.params.id,
-			req.headers['client_ip'] || req.ip,
-			req.headers['user-agent'],
+			clientIp,
+			userAgent,
 			returnJson.bind(null, req, res)
 		);
 	});
