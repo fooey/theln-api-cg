@@ -1,10 +1,10 @@
 'use strict';
 
 
-module.exports = function(app, express) {
+module.exports = function(server, restify) {
 
 
-	app.get('/', dumpRoute);
+	server.get('/', dumpRoute);
 
 
 
@@ -12,11 +12,10 @@ module.exports = function(app, express) {
 	*	LOCAL-MECHANICS
 	*/
 
-	var mechanicsRouter = require('./local-mechanics')(app, express);
-	app.use('/lm', mechanicsRouter);
+	require('./local-mechanics')(server, restify);
 
 
-	
+
 
 	function dumpRoute(req, res) {
 		res.send(req.params);

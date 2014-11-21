@@ -3,7 +3,6 @@
 /*
 *	http://hostname/lm*
 */
-const util = require('util');
 
 const _ = require('lodash');
 
@@ -11,15 +10,14 @@ const citygrid = require(GLOBAL.paths.getService('citygrid'));
 
 
 
-module.exports = function(app, express) {
-	var router = express.Router();
+module.exports = function(server, restify) {
 
 
 	/*
 	*	Place
 	*/
 
-	router.get('/place/:id', function(req, res) {
+	server.get('/lm/place/:id', function(req, res) {
 		citygrid.getPlace(
 			req.params.id,
 			req.headers['client_ip'] || req.ip,
@@ -34,18 +32,20 @@ module.exports = function(app, express) {
 	*	Places
 	*/
 
-	router.get('/places/:stateName/:cityName', function(req, res) {
-		citygrid.getPlaces(
-			req.params.stateName,
-			req.params.cityName,
+	server.get(/\/lm\/places\/([0-9.,;-]+)/, function(req, res) {
+		var coords = req.params[0];
+
+		citygrid.getPlacesLoc(
+			coords,
 			req.query,
 			returnJson.bind(null, req, res)
 		);
 	});
 
-	router.get('/places/:coords([0-9.,;-]+)', function(req, res) {
-		citygrid.getPlacesLoc(
-			req.params.coords,
+	server.get('/lm/places/:stateName/:cityName', function(req, res) {
+		citygrid.getPlaces(
+			req.params.stateName,
+			req.params.cityName,
 			req.query,
 			returnJson.bind(null, req, res)
 		);
@@ -57,7 +57,7 @@ module.exports = function(app, express) {
 	*	Reviews
 	*/
 
-	router.get('/reviews/:stateName/:cityName', function(req, res) {
+	server.get('/lm/reviews/:stateName/:cityName', function(req, res) {
 		citygrid.getReviews(
 			req.params.stateName,
 			req.params.cityName,
@@ -66,9 +66,11 @@ module.exports = function(app, express) {
 		);
 	});
 
-	router.get('/reviews/:coords([0-9.,;-]+)', function(req, res) {
+	server.get(/\/lm\/reviews\/([0-9.,;-]+)/, function(req, res) {
+		var coords = req.params[0];
+
 		citygrid.getReviewsLoc(
-			req.params.coords,
+			coords,
 			req.query,
 			returnJson.bind(null, req, res)
 		);
@@ -80,7 +82,7 @@ module.exports = function(app, express) {
 	*	Offers
 	*/
 
-	router.get('/offers/:stateName/:cityName', function(req, res) {
+	server.get('/lm/offers/:stateName/:cityName', function(req, res) {
 		citygrid.getOffers(
 			req.params.stateName,
 			req.params.cityName,
@@ -89,16 +91,18 @@ module.exports = function(app, express) {
 		);
 	});
 
-	router.get('/offers/:coords([0-9.,;-]+)', function(req, res) {
+	server.get(/\/lm\/offers\/([0-9.,;-]+)/, function(req, res) {
+		var coords = req.params[0];
+
 		citygrid.getOffersLoc(
-			req.params.coords,
+			coords,
 			req.query,
 			returnJson.bind(null, req, res)
 		);
 	});
 
 
-	return router;
+	return server;
 };
 
 
@@ -111,13 +115,13 @@ function returnJson(req, res, err, data) {
 		'Expires': new Date(Date.now() + (cacheTime * 1000)).toUTCString(),
 	});
 
-	res.jsonp(data);
+	res.send(data);
 }
 
 
 
 function dumpRoute(req, res) {
-	res.json({
+	res.send({
 		params: req.params,
 		query: req.query,
 		url: req.originalUrl,

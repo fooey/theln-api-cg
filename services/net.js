@@ -44,7 +44,7 @@ function requestCompressed(requestUrl, fnCallback) {
 		headers: {"accept-encoding" : "gzip,deflate"}
 	};
 
-	console.log('requestOptions', requestOptions);
+	// console.log('requestOptions', requestOptions);
 
 	var req = request.get(requestOptions);
 

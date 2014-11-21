@@ -166,6 +166,9 @@ function getOffersLoc(coordsString, filters, fnCallback) {
 function get(endpoint, params, fnCallback) {
 	const query = _.defaults(params, baseParams);
 
+	delete query.callback;
+	delete query._;
+
 	const requestUrl = url.format({
 		protocol: 'http:',
 		host: 'api.citygridmedia.com',
@@ -188,7 +191,7 @@ function getWhere(endpoint, where, filters, fnCallback) {
 
 	params = _.defaults(params, defaultFilters);
 
-	console.log('params', params);
+	// console.log('params', params);
 
 	get(endpoint, params, function(err, jsonData) {
 		fnCallback(err, jsonData);
@@ -212,7 +215,7 @@ function getLoc(endpoint, bounds, filters, fnCallback) {
 	params = _.assign(params, filters);
 	params = _.defaults(params, defaultFilters);
 
-	console.log('params', params);
+	// console.log('params', params);
 
 	get(endpoint, params, function(err, jsonData) {
 		fnCallback(err, jsonData);

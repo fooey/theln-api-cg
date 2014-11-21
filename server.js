@@ -1,5 +1,10 @@
 'use strict';
-if (process.env.NODE_ENV !== 'development') {
+
+const nodeEnv = (process.env.NODE_ENV === 'development') ? 'development' : 'production';
+const nodePort = process.env.PORT || 3000;
+
+
+if (nodeEnv !== 'development') {
 	require('newrelic');
 
 	if (process.env.NODETIME_ACCOUNT_KEY) {
@@ -18,9 +23,16 @@ if (process.env.NODE_ENV !== 'development') {
 *	GLOBALS
 *
 */
+
 GLOBAL.paths = require('./config/paths');
 
-// const LRU = require("lru-cache");
+
+
+/*
+* Caching
+*/
+
+const lruCacheSize = process.env.CACHE_SIZE || 32;
 GLOBAL.cache = require('lru-cache')({
 	max: process.env.CACHE_SIZE || 32,
 	// length: function (n) { return n * 2 },
@@ -34,38 +46,42 @@ console.log('LRU cache size:', process.env.CACHE_SIZE || 32);
 
 /*
 *
-* Express
+* Restify
 *
 */
 
-const express = require('express');
-const app = express();
+const restify = require('restify');
+
+var server = restify.createServer({
+	name: 'theln-api-geo',
+});
+
+
+require('./config/restify')(server, restify);
+
 
 
 /*
 *
-* Configuration
+* extended cli logging
 *
 */
 
-require(GLOBAL.paths.getConfig('express'))(app, express);
-console.log('App Environment', app.get('env'));
-
-if (app.get('env') === 'development') {
+if (nodeEnv === 'development') {
 	require('longjohn');
 
-	// ['log', 'warn'].forEach(function(method) {
-	// 	var old = console[method];
-	// 	console[method] = function() {
-	// 	var stack = (new Error()).stack.split(/\n/);
-	// 	// Chrome includes a single "Error" line, FF doesn't.
-	// 	if (stack[0].indexOf('Error') === 0) {
-	// 		stack = stack.slice(1);
-	// 	}
-	// 	var args = [].slice.apply(arguments).concat(['\n', stack[1].trim(), '\n']);
-	// 	return old.apply(console, args);
-	// 	};
-	// });
+	['log', 'warn'].forEach(function(method) {
+		var old = console[method];
+		console[method] = function() {
+		var stack = (new Error()).stack.split(/\n/);
+		// Chrome includes a single "Error" line, FF doesn't.
+		if (stack[0].indexOf('Error') === 0) {
+			stack = stack.slice(1);
+		}
+		var args = [].slice.apply(arguments).concat(['\n', stack[1].trim(), '\n']);
+		return old.apply(console, args);
+		};
+	});
 }
 
 
@@ -75,7 +91,7 @@ if (app.get('env') === 'development') {
 *
 */
 
-require(GLOBAL.paths.getRoute())(app, express);
+require(GLOBAL.paths.getRoute())(server, restify);
 
 
 
@@ -88,7 +104,6 @@ require(GLOBAL.paths.getRoute())(app, express);
 */
 
 console.log(Date.now(), 'Running Node.js ' + process.version + ' with flags "' + process.execArgv.join(' ') + '"');
-app.listen(app.get('port'), function() {
-	console.log(Date.now(), 'Express server listening on port ' + app.get('port') + ' in mode: ' + process.env.NODE_ENV);
-	// console.log(Date.now(), 'ENVIRONMENT:', process.env);
+server.listen(nodePort, function() {
+	console.log(Date.now(), 'Restify server listening on port ' + nodePort + ' in mode: ' + nodeEnv);
 });
